@@ -24,7 +24,6 @@ const formSchema = new Schema({
     message: String
 });
 const Form = model('Form', formSchema);
-
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -37,17 +36,26 @@ app.post('/api/form', (req, res) => {
     .then(form=>{console.log("form submitted",form)
     res.send(req.body)
 })
-    .catch(()=>console.log('failed to submit') )
-    
+    .catch(()=>console.log('failed to submit') )   
 });
 
 app.get('/api/forms', (req, res) => {
     Form.find()
     .then(data=>{
         console.log("all forms data are",data);
-        res.send(data);
+        res.status(200).send(data);
     }).catch(err=>console.log("err occured",err))
     });
+ app.post('/api/formdelet',(req,res)=>{
+    const { name, email, message } = req.body;
+      Form.findOneAndDelete({ name: name,email: email,message:message})
+        .then(user =>{console.log('Deleted user:', user);
+        res.send(user)
+    })
+        .catch(err => console.error('Error deleting user:', err));
+    }
+    );
+   
 
 
 // Start the server
